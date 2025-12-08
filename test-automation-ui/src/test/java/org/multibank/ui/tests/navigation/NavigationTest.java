@@ -49,12 +49,16 @@ class NavigationTest extends BaseUiTest {
         log.info("Expected drop down menu items: {}", expectedDropdowns);
 
         expectedDropdowns.forEach((menu, items) -> {
-            header.openDropdown(menu);
+            try {
+                header.openDropdown(menu);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             items.forEach(item ->
                                   Assertions.expectVisible(
                                           "Dropdown item '" + item + "' in menu '" + menu + "'",
-                                          header.isDropdownItemVisible(menu, item)
+                                          header.isDropdownItemVisible(item)
                                   )
             );
         });

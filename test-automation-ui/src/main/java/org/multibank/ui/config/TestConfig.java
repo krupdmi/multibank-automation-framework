@@ -4,5 +4,7 @@ public record TestConfig(
         String baseUrl,
         String browser,
         String environment,
-        String execution) {
+        String execution,
+        int retryCount,
+        int retryDelayMs) {
 }

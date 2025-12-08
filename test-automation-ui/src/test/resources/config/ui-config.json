@@ -2,5 +2,7 @@
   "baseUrl": "https://trade.multibank.io/",
   "browser": "chromium",
   "environment": "PROD",
-  "execution": "local"
+  "execution": "local",
+  "retryCount": 3,
+  "retryDelayMs": 1000
 }

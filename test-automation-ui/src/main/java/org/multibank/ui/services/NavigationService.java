@@ -16,10 +16,10 @@ public class NavigationService {
     }
 
     public boolean isDropdownItemVisible(String menu, String item) {
-        return headerPage.isDropdownItemVisible(menu, item);
+        return headerPage.isDropdownItemVisible(item);
     }
 
-    public void openMenu(String label) {
+    public void openMenu(String label) throws InterruptedException {
         headerPage.clickTopNavItem(label);
     }
 }

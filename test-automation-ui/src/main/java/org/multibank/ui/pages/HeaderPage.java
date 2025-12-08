@@ -38,18 +38,18 @@ public class HeaderPage extends BasePage {
     }
 
     @Step("Click top menu item '{label}'")
-    public void clickTopNavItem(String label) {
+    public void clickTopNavItem(String label) throws InterruptedException {
         actions.click(topNavigationItem(label));
     }
 
     @Step("Open dropdown '{label}'")
-    public void openDropdown(String label) {
+    public void openDropdown(String label) throws InterruptedException {
         actions.click(topNavigationItem(label));
         dropdownPanel().waitFor();
     }
 
-    @Step("Is dropdown item '{label}' visible in '{menu}'?")
-    public boolean isDropdownItemVisible(String menu, String label) {
+    @Step("Is dropdown item '{label}' visible in menu?")
+    public boolean isDropdownItemVisible(String label) {
         return actions.isLocatorVisible(dropdownItem(label));
     }
 }
