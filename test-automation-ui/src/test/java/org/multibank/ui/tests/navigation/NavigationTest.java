@@ -1,6 +1,7 @@
 package org.multibank.ui.tests.navigation;
 
 import io.qameta.allure.*;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.multibank.ui.assertions.Assertions;
 import org.multibank.ui.base.BaseUiTest;
@@ -12,7 +13,8 @@ import java.util.Map;
 
 @Epic("Navigation & Layout")
 @Feature("Top header navigation")
-@Tag("regression")
+@Tag("Regression")
+@Slf4j
 class NavigationTest extends BaseUiTest {
 
     @Test
@@ -21,7 +23,11 @@ class NavigationTest extends BaseUiTest {
     void topNavigationMenuShouldExposePrimaryEntryPoints() {
         HeaderPage header = new HeaderPage(page());
 
-        List<String> expectedMenuItems = NavigationDataProvider.loadNavigationItemsData().getTopNavigationItems();
+        List<String> expectedMenuItems = NavigationDataProvider
+                .loadNavigationItemsData()
+                .getTopNavigationItems();
+
+        log.info("Expected menu items: {}", expectedMenuItems);
 
         expectedMenuItems.forEach(item ->
                                           Assertions.expectVisible(item, header.isTopNavItemVisible(item))
@@ -36,9 +42,15 @@ class NavigationTest extends BaseUiTest {
     void dropdownMenusShouldListExpectedItems() {
         HeaderPage header = new HeaderPage(page());
 
-        Map<String, List<String>> expectedDropdowns = NavigationDataProvider.loadNavigationItemsData().getDropdowns();
+        Map<String, List<String>> expectedDropdowns = NavigationDataProvider
+                .loadNavigationItemsData()
+                .getDropdowns();
+
+        log.info("Expected drop down menu items: {}", expectedDropdowns);
 
         expectedDropdowns.forEach((menu, items) -> {
+            header.openDropdown(menu);
+
             items.forEach(item ->
                                   Assertions.expectVisible(
                                           "Dropdown item '" + item + "' in menu '" + menu + "'",

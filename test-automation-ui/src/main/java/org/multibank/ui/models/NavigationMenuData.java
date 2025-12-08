@@ -13,7 +13,7 @@ public class NavigationMenuData {
         return topNavigationItems;
     }
 
-    public void setTopNavItems(List<String> topNavigationItems) {
+    public void setTopNavigationItems(List<String> topNavigationItems) {
         this.topNavigationItems = topNavigationItems;
     }
 

@@ -6,6 +6,6 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectPackages("org.multibank.ui.tests")
-@IncludeTags("regression")
+@IncludeTags("Regression")
 public class RegressionSuite {
 }

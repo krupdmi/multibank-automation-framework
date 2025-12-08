@@ -3,9 +3,7 @@
     "Dashboard",
     "Markets",
     "Trade",
-    "Features",
-    "About Us",
-    "Support"
+    "More"
   ],
   "userMenuItems": [
     "Log In",
@@ -19,23 +17,16 @@
       "Panic Sell",
       "Convert"
     ],
-    "Features": [
+    "More": [
       "Spot Exchange",
       "Institutional",
-      "Buy & Sell"
-    ],
-    "About Us": [
+      "Buy & Sell",
+      "Contact Us",
+      "FAQs",
       "Why Multibank?",
       "Global Presence",
       "Management",
-      "Awards",
-      "Sponsorship",
-      "Blog",
-      "Milestones"
-    ],
-    "Support": [
-      "Contact Us",
-      "FAQs"
+      "Awards"
     ]
   }
 }

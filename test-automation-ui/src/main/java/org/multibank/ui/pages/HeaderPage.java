@@ -22,16 +22,14 @@ public class HeaderPage extends BasePage {
     }
 
     private Locator dropdownPanel() {
-        return locator("[class*='popover'], [id*='popover'], [data-headlessui-state]");
+        return locator("[id*='popover-panel'][data-headlessui-state='open']");
     }
 
     private Locator dropdownItem(String label) {
-        Locator panel = dropdownPanel();
-
-        return panel.getByRole(
-                        AriaRole.LINK,
-                        new Locator.GetByRoleOptions().setName(label))
-                .or(panel.getByText(label));
+        return dropdownPanel().getByRole(
+                AriaRole.LINK,
+                new Locator.GetByRoleOptions().setName(label)
+        );
     }
 
     @Step("Is top nav item '{label}' visible?")
@@ -47,11 +45,11 @@ public class HeaderPage extends BasePage {
     @Step("Open dropdown '{label}'")
     public void openDropdown(String label) {
         actions.click(topNavigationItem(label));
+        dropdownPanel().waitFor();
     }
 
-    @Step("Is dropdown item '{label}' visible in '{menu}'")
+    @Step("Is dropdown item '{label}' visible in '{menu}'?")
     public boolean isDropdownItemVisible(String menu, String label) {
-        openDropdown(menu);
         return actions.isLocatorVisible(dropdownItem(label));
     }
 }

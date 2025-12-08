@@ -41,7 +41,7 @@ multibank-ui-framework/
 ✔ Pages contain **only locators**  
 ✔ Services contain **interaction logic**  
 ✔ Tests contain **only orchestration and assertions**  
-✔ All expected values stored in external data files (DDT)  
+✔ All test data stored in external files (DDT)  
 ✔ Zero hard-coded assertions in test classes
 
 ---
