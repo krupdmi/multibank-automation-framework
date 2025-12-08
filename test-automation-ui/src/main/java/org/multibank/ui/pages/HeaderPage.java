@@ -54,18 +54,18 @@ public class HeaderPage extends BasePage {
         return panel.getByText(label);
     }
 
-    @Step("Is top nav item '{label}' visible?")
+    @Step("Is top menu item '{label}' visible?")
     public boolean isTopNavItemVisible(String label) {
         return actions.isLocatorVisible(topNavigationItem(label));
     }
 
     @Step("Click top menu item '{label}'")
-    public void clickTopNavItem(String label) throws InterruptedException {
+    public void clickTopNavItem(String label) {
         actions.click(topNavigationItem(label));
     }
 
     @Step("Open dropdown '{label}'")
-    public void openDropdown(String label) throws InterruptedException {
+    public void openDropdown(String label) {
         actions.click(topNavigationItem(label));
         dropdownPanel().waitFor();
     }
@@ -73,5 +73,27 @@ public class HeaderPage extends BasePage {
     @Step("Is dropdown item '{label}' visible in menu?")
     public boolean isDropdownItemVisible(String label) {
         return actions.isLocatorVisible(dropdownItem(label));
+    }
+
+    @Step("Click on top menu item '{label}' and wait for new page")
+    public void clickAndWaitForNewPage(String label) {
+        actions.click(topNavigationItem(label));
+        page.waitForURL(url -> true);
+    }
+
+    public String getTopNavigationItemHref(String label) {
+        return hrefOf(topNavigationItem(label));
+    }
+
+    public String getDropdownItemHref(String label) {
+        return hrefOf(dropdownItem(label));
+    }
+
+    private String hrefOf(Locator locator) {
+        try {
+            return locator.getAttribute("href");
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

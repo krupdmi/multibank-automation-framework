@@ -20,7 +20,7 @@ public class Actions {
         this.retryDelay = config.retryDelayMs();
     }
 
-    public void click(Locator locator) throws InterruptedException {
+    public void click(Locator locator) {
         RetryUtils.retryVoid(retryCount, retryDelay, () -> {
             locator.waitFor();
             locator.click();

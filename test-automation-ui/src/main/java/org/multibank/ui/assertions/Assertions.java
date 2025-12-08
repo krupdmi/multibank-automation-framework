@@ -22,6 +22,20 @@ public final class Assertions {
                 .isTrue();
     }
 
+    public static void expectNull(String description, Object value) {
+        SOFTLY.get()
+                .assertThat(value)
+                .as(description)
+                .isNull();
+    }
+
+    public static void expectNotNull(String description, Object value) {
+        SOFTLY.get()
+                .assertThat(value)
+                .as(description)
+                .isNotNull();
+    }
+
     public static void reset() {
         SOFTLY.remove();
     }

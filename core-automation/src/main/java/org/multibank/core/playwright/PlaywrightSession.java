@@ -1,40 +1,32 @@
 package org.multibank.core.playwright;
 
 import com.microsoft.playwright.*;
+import lombok.extern.slf4j.Slf4j;
 
-public final class PlaywrightSession {
+@Slf4j
+public record PlaywrightSession(
+        Playwright playwright,
+        Browser browser,
+        BrowserContext context,
+        Page page
+) implements AutoCloseable {
 
-    private final Playwright playwright;
-    private final Browser browser;
-    private final BrowserContext context;
-    private final Page page;
-
-    public PlaywrightSession(Playwright playwright, Browser browser, BrowserContext context, Page page) {
-        this.playwright = playwright;
-        this.browser = browser;
-        this.context = context;
-        this.page = page;
-    }
-
-    public Page page() {
-        return page;
-    }
-
-    public BrowserContext context() {
-        return context;
-    }
-
-    public Browser browser() {
-        return browser;
-    }
-
-    public Playwright playwright() {
-        return playwright;
-    }
-
+    @Override
     public void close() {
-        try { context.close(); } catch (Exception ignored) {}
-        try { browser.close(); } catch (Exception ignored) {}
-        try { playwright.close(); } catch (Exception ignored) {}
+        log.info("Closing Playwright session");
+
+        safeClose("BrowserContext", context::close);
+        safeClose("Browser", browser::close);
+        safeClose("Playwright", playwright::close);
+
+        log.info("Playwright session closed");
+    }
+
+    private void safeClose(String component, Runnable action) {
+        try {
+            action.run();
+        } catch (Exception e) {
+            log.warn("Failed to close {}: {}", component, e.getMessage());
+        }
     }
 }

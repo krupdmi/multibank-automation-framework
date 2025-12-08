@@ -20,20 +20,41 @@ class NavigationTest extends BaseUiTest {
     @Test
     @DisplayName("Top navigation menu displays correctly")
     @Story("User sees main navigation items")
-    void topNavigationMenuShouldExposePrimaryEntryPoints() {
+    void topNavigationMenuShouldListMainMenuItems() {
         HeaderPage header = new HeaderPage(page());
 
         List<String> expectedMenuItems = NavigationDataProvider
                 .loadNavigationItemsData()
                 .getTopNavigationItems();
 
+        Map<String, List<String>> dropdownItems =
+                NavigationDataProvider.loadNavigationItemsData().getDropdowns();
+
         log.info("Expected menu items: {}", expectedMenuItems);
 
-        expectedMenuItems.forEach(item ->
-                                          Assertions.expectVisible(item, header.isTopNavItemVisible(item))
-        );
+        expectedMenuItems.forEach(item -> {
+
+            log.info("Validate menu item: {}", item);
+
+            Assertions.expectVisible(item, header.isTopNavItemVisible(item));
+
+            boolean hasDropdown = dropdownItems.containsKey(item);
+            String href = header.getTopNavigationItemHref(item);
+
+            if (hasDropdown) {
+                Assertions.expectNull(
+                        "Menu item '" + item + "' with a dropdown should not have link", href
+                );
+            } else {
+                Assertions.expectNotNull(
+                        "Menu item '" + item + "' without a dropdown should have link", href
+                );
+            }
+        });
 
         Assertions.assertAll();
+
+        log.info("All menu items are present and valid");
     }
 
     @Test
@@ -49,20 +70,26 @@ class NavigationTest extends BaseUiTest {
         log.info("Expected drop down menu items: {}", expectedDropdowns);
 
         expectedDropdowns.forEach((menu, items) -> {
-            try {
-                header.openDropdown(menu);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            header.openDropdown(menu);
 
-            items.forEach(item ->
-                                  Assertions.expectVisible(
-                                          "Dropdown item '" + item + "' in menu '" + menu + "'",
-                                          header.isDropdownItemVisible(item)
-                                  )
-            );
+            items.forEach(item -> {
+                log.info("Validate dropdown item '{}' in menu '{}'", item, menu);
+
+                Assertions.expectVisible(
+                        "Dropdown item '" + item + "' in menu '" + menu + "'",
+                        header.isDropdownItemVisible(item)
+                );
+
+                String href = header.getDropdownItemHref(item);
+                Assertions.expectNotNull(
+                        "Dropdown item '" + item + "' should have a link",
+                        href
+                );
+            });
         });
 
         Assertions.assertAll();
     }
+
 }
+

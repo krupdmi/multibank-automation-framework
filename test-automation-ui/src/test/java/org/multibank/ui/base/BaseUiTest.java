@@ -6,7 +6,6 @@ import org.junit.jupiter.api.*;
 import org.multibank.core.enums.BrowserName;
 import org.multibank.core.playwright.PlaywrightInstanceProvider;
 import org.multibank.core.playwright.PlaywrightSession;
-import org.multibank.ui.config.ParallelExecutionHandler;
 import org.multibank.ui.config.TestConfig;
 import org.multibank.ui.config.TestConfigLoader;
 
@@ -20,7 +19,6 @@ public abstract class BaseUiTest {
     @BeforeAll
     static void loadConfig() {
         config = TestConfigLoader.load();
-        ParallelExecutionHandler.configure(config);
     }
 
     @BeforeEach
