@@ -1,0 +1,15 @@
+services:
+  ui-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      BASE_URL: ${BASE_URL}
+      BROWSER: ${BROWSER}
+      ENVIRONMENT: ${ENVIRONMENT}
+      EXECUTION: ${EXECUTION}
+      RETRY_COUNT: ${RETRY_COUNT}
+      RETRY_DELAY_MS: ${RETRY_DELAY_MS}
+    volumes:
+      - ./test-automation-ui/allure-results:/app/test-automation-ui/allure-results
+    entrypoint: ["/entrypoint.sh"]

@@ -69,6 +69,46 @@ mvn test -Dbrowser=firefox
 mvn test -Dbrowser=webkit
 ```
 
+### Run with Docker
+
+Docker support allows running tests in an isolated environment with all dependencies.
+
+#### Build the Docker image
+
+```bash
+docker-compose build --no-cache
+```
+
+#### Run tests with default configuration
+
+```bash
+docker-compose run ui-tests
+```
+
+#### Run with custom configuration
+
+You can override any environment variable:
+```bash
+BASE_URL=https://example.site.com BROWSER=webkit docker-compose run ui-tests
+```
+
+#### Available environment variables
+
+- `BASE_URL` - Application URL (default: https://trade.multibank.io/)
+- `BROWSER` - Browser: chromium, firefox, webkit (default: chromium)
+- `ENVIRONMENT` - Environment name (default: PROD)
+- `EXECUTION` - Execution mode (default: docker)
+- `RETRY_COUNT` - Number of retries for flaky tests (default: 3)
+- `RETRY_DELAY_MS` - Delay between retries in milliseconds (default: 1000)
+
+#### Access test results
+
+Test results are automatically stored locally:
+
+```bash
+./test-automation-ui/allure-results/
+```
+
 ---
 
 ### Data-Driven Approach
@@ -90,7 +130,6 @@ This allows easy updates without touching code.
 - Multi-browser grid execution
 - Automated retries at test level
 - CI/CD integration
-- Docker executions support
 - API module creation
 
 ---
