@@ -113,7 +113,7 @@ Test results are automatically stored locally:
 
 ### Data-Driven Approach
 
-Expected test data for web pages are stored in:
+Test data is stored externally in JSON format, for example:
 
 ```
 /testdata/navigation.json

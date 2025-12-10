@@ -67,13 +67,11 @@ public final class TestConfigLoader {
     private static String getPropertyOrDefault(String systemPropertyKey, String envKey, String defaultValue) {
         String systemProp = System.getProperty(systemPropertyKey);
         if (systemProp != null && !systemProp.isBlank()) {
-            log.debug("Using system property {}={}", systemPropertyKey, systemProp);
             return systemProp;
         }
 
         String envVar = System.getenv(envKey);
         if (envVar != null && !envVar.isBlank()) {
-            log.debug("Using environment variable {}={}", envKey, envVar);
             return envVar;
         }
 

@@ -1,35 +1,20 @@
 package org.multibank.ui.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class NavigationMenuData {
 
+    @JsonProperty("topNavigationItems")
     private List<String> topNavigationItems;
+
+    @JsonProperty("userMenuItems")
     private List<String> userMenuItems;
+
+    @JsonProperty("dropdowns")
     private Map<String, List<String>> dropdowns;
-
-    public List<String> getTopNavigationItems() {
-        return topNavigationItems;
-    }
-
-    public void setTopNavigationItems(List<String> topNavigationItems) {
-        this.topNavigationItems = topNavigationItems;
-    }
-
-    public List<String> getUserMenuItems() {
-        return userMenuItems;
-    }
-
-    public void setUserMenuItems(List<String> userMenuItems) {
-        this.userMenuItems = userMenuItems;
-    }
-
-    public Map<String, List<String>> getDropdowns() {
-        return dropdowns;
-    }
-
-    public void setDropdowns(Map<String, List<String>> dropdowns) {
-        this.dropdowns = dropdowns;
-    }
 }

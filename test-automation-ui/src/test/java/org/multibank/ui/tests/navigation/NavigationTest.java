@@ -6,7 +6,7 @@ import org.junit.jupiter.api.*;
 import org.multibank.ui.assertions.Assertions;
 import org.multibank.ui.base.BaseUiTest;
 import org.multibank.ui.dataprovider.NavigationDataProvider;
-import org.multibank.ui.pages.HeaderPage;
+import org.multibank.ui.pages.home.HeaderPage;
 
 import java.util.List;
 import java.util.Map;

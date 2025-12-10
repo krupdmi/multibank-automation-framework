@@ -1,9 +1,10 @@
-package org.multibank.ui.pages;
+package org.multibank.ui.pages.home;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import io.qameta.allure.Step;
+import org.multibank.ui.pages.BasePage;
 
 public class HeaderPage extends BasePage {
 
@@ -75,10 +76,9 @@ public class HeaderPage extends BasePage {
         return actions.isLocatorVisible(dropdownItem(label));
     }
 
-    @Step("Click on top menu item '{label}' and wait for new page")
-    public void clickAndWaitForNewPage(String label) {
-        actions.click(topNavigationItem(label));
-        page.waitForURL(url -> true);
+    @Step("Click dropdown item '{label}'")
+    public void clickDropdownItem(String label) {
+        actions.click(dropdownItem(label));
     }
 
     public String getTopNavigationItemHref(String label) {
