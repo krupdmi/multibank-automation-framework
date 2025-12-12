@@ -3,6 +3,7 @@
   "browser": "chromium",
   "environment": "PROD",
   "execution": "local",
+  "lang": "de",
   "retryCount": 3,
   "retryDelayMs": 1000
 }

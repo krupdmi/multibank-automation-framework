@@ -17,5 +17,4 @@ public abstract class BasePage {
     protected Locator locator(String selector) {
         return page.locator(selector);
     }
-
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class NavigationMenuData {
+public class LanguageNavigation {
 
     @JsonProperty("basePath")
     private String basePath;

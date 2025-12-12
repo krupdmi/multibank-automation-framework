@@ -2,13 +2,16 @@ package org.multibank.ui.tests.content;
 
 import io.qameta.allure.*;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.multibank.ui.assertions.Assertions;
 import org.multibank.ui.base.BaseUiTest;
 import org.multibank.ui.dataprovider.ContentValidationDataProvider;
+import org.multibank.ui.dataprovider.NavigationDataProvider;
 import org.multibank.ui.models.ContentValidationData;
+import org.multibank.ui.models.LanguageNavigation;
 import org.multibank.ui.pages.aboutus.WhyMultibankPage;
 import org.multibank.ui.pages.home.FooterPage;
 import org.multibank.ui.pages.home.HeaderPage;
@@ -19,15 +22,26 @@ import org.multibank.ui.pages.home.HeaderPage;
 @Slf4j
 class ContentTest extends BaseUiTest {
 
+    private HeaderPage header;
+    private ContentValidationData contentData;
+
+    @BeforeEach
+    void setUpContent() {
+        header = new HeaderPage(page());
+        LanguageNavigation languageNavigation = NavigationDataProvider.loadForConfiguredLanguage();
+        contentData = ContentValidationDataProvider.loadForConfiguredLanguage();
+
+        log.info("Selecting language: {}", languageNavigation.getLanguageLabel());
+        header.selectLanguage(languageNavigation.getLanguageLabel());
+    }
+
     @Test
     @DisplayName("Check that marketing banners appear at the bottom of the home page")
     @Story("User can see marketing banners")
     void marketingBannersShouldAppearAtBottomOfPage() {
         FooterPage footer = new FooterPage(page());
 
-        ContentValidationData.MarketingBanners expected = ContentValidationDataProvider
-                .loadContentValidationData()
-                .getMarketingBanners();
+        ContentValidationData.MarketingBanners expected = contentData.getMarketingBanners();
 
         footer.scrollToFooter();
 
@@ -61,9 +75,7 @@ class ContentTest extends BaseUiTest {
     void downloadSectionShouldLinkToAppStores() {
         FooterPage footer = new FooterPage(page());
 
-        ContentValidationData.DownloadSection expected = ContentValidationDataProvider
-                .loadContentValidationData()
-                .getDownloadSection();
+        ContentValidationData.DownloadSection expected = contentData.getDownloadSection();
 
         footer.scrollToFooter();
 
@@ -90,10 +102,8 @@ class ContentTest extends BaseUiTest {
     @DisplayName("Check that 'Why Multibank?' page renders expected components")
     @Story("User can view 'Why Multibank?' page")
     void whyMultiBankPageShouldRenderExpectedComponents() {
-        HeaderPage header = new HeaderPage(page());
-        ContentValidationData data = ContentValidationDataProvider.loadContentValidationData();
-        ContentValidationData.Navigation navigation = data.getNavigation();
-        ContentValidationData.WhyMultiBankPage expected = data.getWhyMultiBankPage();
+        ContentValidationData.Navigation navigation = contentData.getNavigation();
+        ContentValidationData.WhyMultiBankPage expected = contentData.getWhyMultiBankPage();
 
         header.openDropdown(navigation.getDropdown());
         header.clickDropdownItem(navigation.getItem());

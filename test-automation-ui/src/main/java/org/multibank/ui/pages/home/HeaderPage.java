@@ -9,36 +9,32 @@ import org.multibank.ui.pages.BasePage;
 public class HeaderPage extends BasePage {
 
     private final Locator header;
+    private final Locator userActionsContainer;
+    private final Locator languagePickerButton;
 
     public HeaderPage(Page page) {
         super(page);
         this.header = locator("[class*='header-main-content']");
+        this.userActionsContainer = locator("[class*='user-actions']");
+        this.languagePickerButton = locator("#language-header-option-open-button");
     }
 
     private Locator topNavigationItem(String label) {
-        return header.getByRole(
-                        AriaRole.LINK,
-                        new Locator.GetByRoleOptions().setName(label))
-                .or(header.getByText(label));
+        return header.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName(label)).or(header.getByText(label));
     }
 
     private Locator dropdownPanel() {
-        // Trade
         Locator headless = locator("[id*='popover-panel'][data-headlessui-state='open']");
         if (headless.count() > 0) {
             return headless.first();
         }
 
-        // More, Features, Support, About Us
         Locator classPanel = locator("div[class*='popover-panel']");
         if (classPanel.count() > 0) {
             return classPanel.first();
         }
 
-        // Default
-        Locator fallback = locator("div:has(a[href])").filter(
-                new Locator.FilterOptions().setHasText("")
-        );
+        Locator fallback = locator("div:has(a[href])").filter(new Locator.FilterOptions().setHasText(""));
 
         return fallback.first();
     }
@@ -46,13 +42,22 @@ public class HeaderPage extends BasePage {
     private Locator dropdownItem(String label) {
         Locator panel = dropdownPanel();
 
-        Locator byRole = panel.getByRole(
-                AriaRole.LINK,
-                new Locator.GetByRoleOptions().setName(label)
-        );
+        Locator byRole = panel.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName(label));
         if (byRole.count() > 0) return byRole.first();
 
         return panel.getByText(label);
+    }
+
+    private Locator userActionButton(String label) {
+        return userActionsContainer.locator("a").filter(new Locator.FilterOptions().setHasText(label));
+    }
+
+    private Locator languagePanel() {
+        return locator("[id*='popover-panel'][data-headlessui-state='open']");
+    }
+
+    private Locator languageOption(String languageLabel) {
+        return languagePanel().locator("a[class*='language-list-item']").filter(new Locator.FilterOptions().setHasText(languageLabel));
     }
 
     @Step("Is top menu item '{label}' visible?")
@@ -81,12 +86,38 @@ public class HeaderPage extends BasePage {
         actions.click(dropdownItem(label));
     }
 
-    public String getTopNavigationItemHref(String label) {
-        return hrefOf(topNavigationItem(label));
+    @Step("Is user action button '{label}' visible?")
+    public boolean isUserActionVisible(String label) {
+        return actions.isLocatorVisible(userActionButton(label));
+    }
+
+    @Step("Click user action button '{label}'")
+    public void clickUserAction(String label) {
+        actions.click(userActionButton(label));
+    }
+
+    @Step("Open language picker")
+    public void openLanguagePicker() {
+        actions.click(languagePickerButton);
+        languagePanel().waitFor();
+    }
+
+    @Step("Select language '{languageLabel}'")
+    public void selectLanguage(String languageLabel) {
+        openLanguagePicker();
+        actions.click(languageOption(languageLabel));
     }
 
     public String getDropdownItemHref(String label) {
         return hrefOf(dropdownItem(label));
+    }
+
+    public String getTopNavigationItemHref(String label) {
+        return hrefOf(topNavigationItem(label));
+    }
+
+    public String getUserActionHref(String label) {
+        return hrefOf(userActionButton(label));
     }
 
     private String hrefOf(Locator locator) {

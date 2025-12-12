@@ -6,10 +6,11 @@ import org.junit.jupiter.api.*;
 import org.multibank.ui.assertions.Assertions;
 import org.multibank.ui.base.BaseUiTest;
 import org.multibank.ui.dataprovider.NavigationDataProvider;
+import org.multibank.ui.models.LanguageNavigation;
+import org.multibank.ui.models.NavigationItem;
 import org.multibank.ui.pages.home.HeaderPage;
 
 import java.util.List;
-import java.util.Map;
 
 @Epic("Navigation & Layout")
 @Feature("Top header navigation")
@@ -17,43 +18,47 @@ import java.util.Map;
 @Slf4j
 class NavigationTest extends BaseUiTest {
 
+    private HeaderPage header;
+    private LanguageNavigation navData;
+
+    @BeforeEach
+    void setUpNavigation() {
+        header = new HeaderPage(page());
+        navData = NavigationDataProvider.loadForConfiguredLanguage();
+
+        log.info("Selecting language: {}", navData.getLanguageLabel());
+        header.selectLanguage(navData.getLanguageLabel());
+    }
+
     @Test
     @DisplayName("Top navigation menu displays correctly")
     @Story("User sees main navigation items")
     void topNavigationMenuShouldListMainMenuItems() {
-        HeaderPage header = new HeaderPage(page());
+        List<NavigationItem> menuItems = navData.getTopNavigationPanel().getItems();
 
-        List<String> expectedMenuItems = NavigationDataProvider
-                .loadNavigationItemsData()
-                .getTopNavigationItems();
+        log.info("Testing navigation for language: {}", navData.getLanguageLabel());
+        log.info("Expected menu items: {}", menuItems.stream().map(NavigationItem::getLabel).toList());
 
-        Map<String, List<String>> dropdownItems =
-                NavigationDataProvider.loadNavigationItemsData().getDropdowns();
+        for (NavigationItem item : menuItems) {
+            String label = item.getLabel();
+            log.info("Validate menu item: {}", label);
 
-        log.info("Expected menu items: {}", expectedMenuItems);
+            Assertions.expectVisible(label, header.isTopNavItemVisible(label));
 
-        expectedMenuItems.forEach(item -> {
+            String href = header.getTopNavigationItemHref(label);
 
-            log.info("Validate menu item: {}", item);
-
-            Assertions.expectVisible(item, header.isTopNavItemVisible(item));
-
-            boolean hasDropdown = dropdownItems.containsKey(item);
-            String href = header.getTopNavigationItemHref(item);
-
-            if (hasDropdown) {
+            if (item.hasSubItem()) {
                 Assertions.expectNull(
-                        "Menu item '" + item + "' with a dropdown should not have link", href
+                        "Menu item '" + label + "' with subItem should not have direct link", href
                 );
             } else {
                 Assertions.expectNotNull(
-                        "Menu item '" + item + "' without a dropdown should have link", href
+                        "Menu item '" + label + "' without subItem should have link", href
                 );
             }
-        });
+        }
 
         Assertions.assertAll();
-
         log.info("All menu items are present and valid");
     }
 
@@ -61,35 +66,63 @@ class NavigationTest extends BaseUiTest {
     @DisplayName("Top navigation menu displays dropdown items")
     @Story("User expands dropdown menus")
     void dropdownMenusShouldListExpectedItems() {
-        HeaderPage header = new HeaderPage(page());
+        List<NavigationItem> menuItems = navData.getTopNavigationPanel().getItems();
 
-        Map<String, List<String>> expectedDropdowns = NavigationDataProvider
-                .loadNavigationItemsData()
-                .getDropdowns();
+        log.info("Testing dropdowns for language: {}", navData.getLanguageLabel());
 
-        log.info("Expected drop down menu items: {}", expectedDropdowns);
+        for (NavigationItem parentItem : menuItems) {
+            if (!parentItem.hasSubItem()) {
+                continue;
+            }
 
-        expectedDropdowns.forEach((menu, items) -> {
-            header.openDropdown(menu);
+            String parentLabel = parentItem.getLabel();
+            log.info("Opening dropdown: {}", parentLabel);
+            header.openDropdown(parentLabel);
 
-            items.forEach(item -> {
-                log.info("Validate dropdown item '{}' in menu '{}'", item, menu);
+            for (NavigationItem childItem : parentItem.getSubItem()) {
+                String childLabel = childItem.getLabel();
+                log.info("Validate dropdown item '{}' in menu '{}'", childLabel, parentLabel);
 
                 Assertions.expectVisible(
-                        "Dropdown item '" + item + "' in menu '" + menu + "'",
-                        header.isDropdownItemVisible(item)
+                        "Dropdown item '" + childLabel + "' in menu '" + parentLabel + "'",
+                        header.isDropdownItemVisible(childLabel)
                 );
 
-                String href = header.getDropdownItemHref(item);
+                String href = header.getDropdownItemHref(childLabel);
                 Assertions.expectNotNull(
-                        "Dropdown item '" + item + "' should have a link",
+                        "Dropdown item '" + childLabel + "' should have a link",
                         href
                 );
-            });
-        });
+            }
+        }
 
         Assertions.assertAll();
     }
 
-}
+    @Test
+    @DisplayName("User action buttons are visible")
+    @Story("User sees login and signup options")
+    void userActionButtonsShouldBeVisible() {
+        List<NavigationItem> userActions = navData.getUserAction().getItems();
 
+        log.info("Testing user action buttons for language: {}", navData.getLanguageLabel());
+
+        for (NavigationItem action : userActions) {
+            String label = action.getLabel();
+            log.info("Validate user action button: {}", label);
+
+            Assertions.expectVisible(label, header.isUserActionVisible(label));
+
+            if (action.getLink() != null) {
+                String href = header.getUserActionHref(label);
+                Assertions.expectNotNull(
+                        "User action '" + label + "' should have a link",
+                        href
+                );
+            }
+        }
+
+        Assertions.assertAll();
+        log.info("All user action buttons are present and valid");
+    }
+}

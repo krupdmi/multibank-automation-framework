@@ -5,6 +5,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
+import org.multibank.ui.constants.TestConstants;
 import org.multibank.ui.pages.BasePage;
 
 @Slf4j
@@ -12,8 +13,6 @@ public class SpotTradingPage extends BasePage {
 
     private static final String TRADE_PAIRS_TABLE = "#trade-pairs";
     private static final String TRADE_PAIRS_SCROLLER = ".h-100 >.style_container__pShEu >.style_scroller__yxXrE";
-    private static final int MAX_SCROLL_ATTEMPTS = 30;
-    private static final int SCROLL_STEP = 300;
 
     public SpotTradingPage(Page page) {
         super(page);
@@ -33,25 +32,22 @@ public class SpotTradingPage extends BasePage {
     public boolean scrollToPair(String pairId) {
         Locator pairNameLocator = locator(String.format("[id='pair-name-%s']", pairId));
         Locator scroller = locator(TRADE_PAIRS_SCROLLER).first();
+        actions.scrollContainerToTop(scroller);
 
-        scroller.evaluate("el => el.scrollTop = 0");
-        page.waitForTimeout(200);
-
-        if (pairNameLocator.count() > 0 && pairNameLocator.isVisible()) {
+        if (actions.waitForVisibleSafe(pairNameLocator, TestConstants.POLL_INTERVAL_MS)) {
             return true;
         }
 
-        for (int i = 0; i < MAX_SCROLL_ATTEMPTS; i++) {
-            scroller.evaluate("el => el.scrollTop += " + SCROLL_STEP);
-            page.waitForTimeout(200);
+        for (int i = 0; i < TestConstants.MAX_SCROLL_ATTEMPTS; i++) {
+            actions.scrollContainerBy(scroller, TestConstants.SCROLL_STEP_PX);
 
-            if (pairNameLocator.count() > 0 && pairNameLocator.isVisible()) {
-                log.info("Found pair {} after {} scroll", pairId, i + 1);
+            if (actions.waitForVisibleSafe(pairNameLocator, TestConstants.POLL_INTERVAL_MS)) {
+                log.info("Found pair {} after {} scroll(s)", pairId, i + 1);
                 return true;
             }
         }
 
-        log.warn("Could not find pair {} after {} scroll attempts reached", pairId, MAX_SCROLL_ATTEMPTS);
+        log.warn("Could not find pair {} after {} scroll attempts", pairId, TestConstants.MAX_SCROLL_ATTEMPTS);
         return false;
     }
 
@@ -70,7 +66,7 @@ public class SpotTradingPage extends BasePage {
     @Step("Get trading pair '{pairId}' display name")
     public String getPairDisplayName(String pairId) {
         Locator nameLocator = locator(String.format("[id='pair-name-%s']", pairId));
-        return nameLocator.textContent().trim();
+        return actions.getText(nameLocator);
     }
 
     @Step("Check if trading pair '{pairId}' has price element")
@@ -82,7 +78,7 @@ public class SpotTradingPage extends BasePage {
     @Step("Get trading pair '{pairId}' price")
     public String getPairPrice(String pairId) {
         Locator priceLocator = locator(String.format("[id='trade-pairs-%s_price-td']", pairId));
-        return priceLocator.textContent().trim();
+        return actions.getText(priceLocator);
     }
 
     @Step("Check if trading pair '{pairId}' has 24h change element")
@@ -94,6 +90,6 @@ public class SpotTradingPage extends BasePage {
     @Step("Get trading pair '{pairId}' 24h change value")
     public String getPair24hChange(String pairId) {
         Locator changeLocator = locator(String.format("[id='pair-%s-24h-change']", pairId));
-        return changeLocator.textContent().trim();
+        return actions.getText(changeLocator);
     }
 }

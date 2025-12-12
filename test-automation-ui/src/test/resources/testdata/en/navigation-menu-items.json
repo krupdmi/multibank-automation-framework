@@ -1,0 +1,120 @@
+{
+  "basePath": "/",
+  "languageLabel": "English",
+  "topNavigationPanel": {
+    "items": [
+      {
+        "label": "Dashboard",
+        "link": "/"
+      },
+      {
+        "label": "Markets",
+        "link": "/markets"
+      },
+      {
+        "label": "Trade",
+        "link": null,
+        "subItem": [
+          {
+            "label": "Spot",
+            "link": "/trade/BTC_USD"
+          },
+          {
+            "label": "Derivatives",
+            "link": "/derivatives/BTCUST"
+          },
+          {
+            "label": "Instant Buy",
+            "link": "/"
+          },
+          {
+            "label": "Panic Sell",
+            "link": "/"
+          },
+          {
+            "label": "Convert",
+            "link": "/trade/convert"
+          }
+        ]
+      },
+      {
+        "label": "Features",
+        "link": null,
+        "subItem": [
+          {
+            "label": "Spot Exchange",
+            "link": "https://multibank.io/features/spot-exchange"
+          },
+          {
+            "label": "Institutional",
+            "link": "https://multibank.io/features/institutional"
+          },
+          {
+            "label": "Buy & Sell",
+            "link": "https://multibank.io/features/instant-buy"
+          }
+        ]
+      },
+      {
+        "label": "About Us",
+        "link": null,
+        "subItem": [
+          {
+            "label": "Why Multibank?",
+            "link": "https://multibank.io/about/why-multibank"
+          },
+          {
+            "label": "Global Presence",
+            "link": "https://multibank.io/about/global-presence"
+          },
+          {
+            "label": "Management",
+            "link": "https://multibank.io/about/management"
+          },
+          {
+            "label": "Awards",
+            "link": "https://multibank.io/about/awards"
+          },
+          {
+            "label": "Sponsorship",
+            "link": "https://multibank.io/about/sponsorship"
+          },
+          {
+            "label": "Blog",
+            "link": "https://multibank.io/about/blog"
+          },
+          {
+            "label": "Milestones",
+            "link": "https://multibank.io/about/milestones"
+          }
+        ]
+      },
+      {
+        "label": "Support",
+        "link": null,
+        "subItem": [
+          {
+            "label": "Contact Us",
+            "link": "https://multibank.io/support/contact-us"
+          },
+          {
+            "label": "FAQs",
+            "link": "https://multibank.io/support/faq"
+          }
+        ]
+      }
+    ]
+  },
+  "userAction": {
+    "items": [
+      {
+        "label": "Log In",
+        "link": "/login"
+      },
+      {
+        "label": "Sign Up",
+        "link": "/register"
+      }
+    ]
+  }
+}

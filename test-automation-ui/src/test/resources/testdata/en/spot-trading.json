@@ -1,0 +1,21 @@
+{
+  "navigation": {
+    "dropdown": "Trade",
+    "item": "Spot"
+  },
+  "tradePairSelector": "#trade-pair",
+  "tradingPairs": [
+    {
+      "pairId": "BTC/USDT",
+      "displayName": "BTC-USDT"
+    },
+    {
+      "pairId": "ETH/BTC",
+      "displayName": "ETH-BTC"
+    },
+    {
+      "pairId": "ETH/USDT",
+      "displayName": "ETH-USDT"
+    }
+  ]
+}

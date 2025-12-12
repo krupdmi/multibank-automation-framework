@@ -10,6 +10,7 @@ services:
       EXECUTION: ${EXECUTION}
       RETRY_COUNT: ${RETRY_COUNT}
       RETRY_DELAY_MS: ${RETRY_DELAY_MS}
+      LANG: ${LANG}
     volumes:
       - ./test-automation-ui/allure-results:/app/test-automation-ui/allure-results
     entrypoint: ["/entrypoint.sh"]
