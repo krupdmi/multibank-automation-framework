@@ -79,18 +79,18 @@ class NavigationTest extends BaseUiTest {
             log.info("Opening dropdown: {}", parentLabel);
             header.openDropdown(parentLabel);
 
-            for (NavigationItem childItem : parentItem.getSubItem()) {
-                String childLabel = childItem.getLabel();
-                log.info("Validate dropdown item '{}' in menu '{}'", childLabel, parentLabel);
+            for (NavigationItem subItem : parentItem.getSubItem()) {
+                String subItemLabel = subItem.getLabel();
+                log.info("Validate dropdown item '{}' in menu '{}'", subItemLabel, parentLabel);
 
                 Assertions.expectVisible(
-                        "Dropdown item '" + childLabel + "' in menu '" + parentLabel + "'",
-                        header.isDropdownItemVisible(childLabel)
+                        "Dropdown item '" + subItemLabel + "' in menu '" + parentLabel + "'",
+                        header.isDropdownItemVisible(subItemLabel)
                 );
 
-                String href = header.getDropdownItemHref(childLabel);
+                String href = header.getDropdownItemHref(subItemLabel);
                 Assertions.expectNotNull(
-                        "Dropdown item '" + childLabel + "' should have a link",
+                        "Dropdown item '" + subItemLabel + "' should have a link",
                         href
                 );
             }

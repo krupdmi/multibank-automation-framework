@@ -24,36 +24,50 @@ public class HeaderPage extends BasePage {
     }
 
     private Locator dropdownPanel() {
-        Locator headless = locator("[id*='popover-panel'][data-headlessui-state='open']");
-        if (headless.count() > 0) {
-            return headless.first();
+        Locator openPanel = locator("div[class*='popover-panel'][data-headlessui-state='open']");
+        if (openPanel.count() > 0) {
+            return openPanel.first();
         }
 
-        Locator classPanel = locator("div[class*='popover-panel']");
-        if (classPanel.count() > 0) {
-            return classPanel.first();
+        Locator visiblePanel = locator("div[class*='popover-panel']")
+                .filter(new Locator.FilterOptions().setHas(locator("a")));
+        if (visiblePanel.count() > 0) {
+            return visiblePanel.first();
         }
 
-        Locator fallback = locator("div:has(a[href])").filter(new Locator.FilterOptions().setHasText(""));
-
-        return fallback.first();
+        return locator("[id*='popover-panel']").first();
     }
 
     private Locator dropdownItem(String label) {
         Locator panel = dropdownPanel();
 
-        Locator byRole = panel.getByRole(AriaRole.LINK, new Locator.GetByRoleOptions().setName(label));
-        if (byRole.count() > 0) return byRole.first();
+        Locator filterByTextDiv = panel.locator("a")
+                .filter(new Locator.FilterOptions().setHas(locator("div[class*='text']").filter(new Locator.FilterOptions().setHasText(label))));
+        if (filterByTextDiv.count() > 0) {
+            return filterByTextDiv.first();
+        }
+
+        Locator filterByText = panel.locator("a")
+                .filter(new Locator.FilterOptions().setHasText(label));
+        if (filterByText.count() > 0) {
+            return filterByText.first();
+        }
 
         return panel.getByText(label);
     }
 
     private Locator userActionButton(String label) {
+        Locator filterBySpan = userActionsContainer.locator("a")
+                .filter(new Locator.FilterOptions().setHas(locator("span").filter(new Locator.FilterOptions().setHasText(label))));
+        if (filterBySpan.count() > 0) {
+            return filterBySpan.first();
+        }
+
         return userActionsContainer.locator("a").filter(new Locator.FilterOptions().setHasText(label));
     }
 
     private Locator languagePanel() {
-        return locator("[id*='popover-panel'][data-headlessui-state='open']");
+        return locator("[id*='popover-panel']:not([hidden])").or(locator("div[class*='popover-panel']")).first();
     }
 
     private Locator languageOption(String languageLabel) {
@@ -106,6 +120,9 @@ public class HeaderPage extends BasePage {
     public void selectLanguage(String languageLabel) {
         openLanguagePicker();
         actions.click(languageOption(languageLabel));
+
+        page.waitForLoadState();
+        header.waitFor();
     }
 
     public String getDropdownItemHref(String label) {

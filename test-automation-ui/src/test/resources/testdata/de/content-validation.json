@@ -11,7 +11,7 @@
     "minBannerCount": 3
   },
   "whyMultiBankPage": {
-    "expectedHeading": "Warum MultiBank?",
+    "expectedHeading": "Why MultiBank?",
     "minFeatureCount": 3,
     "minStatsCount": 5
   }
