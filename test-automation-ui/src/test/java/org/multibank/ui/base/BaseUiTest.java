@@ -3,8 +3,7 @@ package org.multibank.ui.base;
 import com.microsoft.playwright.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestWatcher;
+import org.junit.jupiter.api.extension.*;
 import org.multibank.core.enums.BrowserName;
 import org.multibank.core.playwright.PlaywrightInstanceProvider;
 import org.multibank.core.playwright.PlaywrightSession;
@@ -12,15 +11,14 @@ import org.multibank.ui.config.TestConfig;
 import org.multibank.ui.config.TestConfigLoader;
 import org.multibank.ui.utils.ScreenshotUtils;
 
-import java.util.Optional;
-
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@ExtendWith(BaseUiTest.ScreenshotExtension.class)
 @Slf4j
-public abstract class BaseUiTest implements TestWatcher {
+public abstract class BaseUiTest {
 
     private static TestConfig config;
     private static final ThreadLocal<PlaywrightSession> sessionStorage = new ThreadLocal<>();
-    private static final ThreadLocal<Boolean> testFailed = ThreadLocal.withInitial(() -> false);
+    private static final ThreadLocal<Throwable> testFailure = new ThreadLocal<>();
 
     @BeforeAll
     static void loadConfig() {
@@ -29,7 +27,7 @@ public abstract class BaseUiTest implements TestWatcher {
 
     @BeforeEach
     void setUp() {
-        testFailed.set(false);
+        testFailure.remove();
         BrowserName browser = BrowserName.valueOf(config.browser().toUpperCase());
         PlaywrightSession session = PlaywrightInstanceProvider.createPage(browser, config.baseUrl());
 
@@ -41,13 +39,13 @@ public abstract class BaseUiTest implements TestWatcher {
     void tearDown(TestInfo testInfo) {
         PlaywrightSession session = sessionStorage.get();
         if (session != null) {
-            if (testFailed.get()) {
-                captureScreenshotOnFailure(testInfo);
+            if (testFailure.get() != null) {
+                captureScreenshotOnFailure(testInfo.getDisplayName());
             }
             session.close();
         }
         sessionStorage.remove();
-        testFailed.remove();
+        testFailure.remove();
         log.info("Session closed in thread: {}", Thread.currentThread().getName());
     }
 
@@ -55,33 +53,20 @@ public abstract class BaseUiTest implements TestWatcher {
         return sessionStorage.get().page();
     }
 
-    @Override
-    public void testFailed(ExtensionContext context, Throwable cause) {
-        testFailed.set(true);
-        log.error("Test failed: {} - {}", context.getDisplayName(), cause.getMessage());
-    }
-
-    @Override
-    public void testSuccessful(ExtensionContext context) {
-        log.info("Test passed: {}", context.getDisplayName());
-    }
-
-    @Override
-    public void testAborted(ExtensionContext context, Throwable cause) {
-        log.warn("Test aborted: {}", context.getDisplayName());
-    }
-
-    @Override
-    public void testDisabled(ExtensionContext context, Optional<String> reason) {
-        log.info("Test disabled: {} - {}", context.getDisplayName(), reason.orElse("No reason"));
-    }
-
-    private void captureScreenshotOnFailure(TestInfo testInfo) {
+    private void captureScreenshotOnFailure(String testName) {
         try {
-            String testName = testInfo.getDisplayName();
             ScreenshotUtils.captureAndAttach(page(), "Test Failure - " + testName);
+            log.info("Screenshot captured for: {}", testName);
         } catch (Exception e) {
             log.error("Failed to capture screenshot: {}", e.getMessage());
+        }
+    }
+
+    public static class ScreenshotExtension implements TestExecutionExceptionHandler {
+        @Override
+        public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+            testFailure.set(throwable);
+            throw throwable;
         }
     }
 }
