@@ -1,0 +1,18 @@
+{
+  "navigation": {
+    "dropdown": "Quiénes somos",
+    "item": "¿Por qué MultiBank?"
+  },
+  "downloadSection": {
+    "appStorePattern": "apps.apple.com|itunes.apple.com",
+    "googlePlayPattern": "play.google.com"
+  },
+  "marketingBanners": {
+    "minBannerCount": 3
+  },
+  "whyMultiBankPage": {
+    "expectedHeading": "Why MultiBank?",
+    "minFeatureCount": 3,
+    "minStatsCount": 5
+  }
+}

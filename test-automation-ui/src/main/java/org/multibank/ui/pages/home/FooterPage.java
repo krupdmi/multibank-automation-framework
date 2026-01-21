@@ -13,6 +13,7 @@ public class FooterPage extends BasePage {
     private static final String DOWNLOAD_CONTAINER = ".style_buttons-container__9n_JQ";
     private static final String APP_STORE_LINK = "a[href*='apps.apple.com']";
     private static final String GOOGLE_PLAY_LINK = "a[href*='play.google.com']";
+    private static final String HREF = "href";
 
     public FooterPage(Page page) {
         super(page);
@@ -40,11 +41,11 @@ public class FooterPage extends BasePage {
 
     @Step("Get App Store link href")
     public String getAppStoreLinkHref() {
-        return actions.getAttribute(locator(APP_STORE_LINK).first(), "href");
+        return actions.getAttribute(locator(APP_STORE_LINK).first(), HREF);
     }
 
     @Step("Get Google Play link href")
     public String getGooglePlayLinkHref() {
-        return actions.getAttribute(locator(GOOGLE_PLAY_LINK).first(), "href");
+        return actions.getAttribute(locator(GOOGLE_PLAY_LINK).first(), HREF);
     }
 }

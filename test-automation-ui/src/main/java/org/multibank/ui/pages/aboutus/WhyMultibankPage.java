@@ -8,13 +8,13 @@ import org.multibank.ui.pages.BasePage;
 @Slf4j
 public class WhyMultibankPage extends BasePage {
 
-    public WhyMultibankPage(Page page) {
-        super(page);
-    }
-
     private static final String MAIN_HEADING = "h1.heading-1";
     private static final String FEATURE_CARD = ".cardSection_card-div__vdowX";
     private static final String STATS_CARD = ".established_card-div__fF1Jf";
+
+    public WhyMultibankPage(Page page) {
+        super(page);
+    }
 
     @Step("Get main heading text")
     public String getMainHeading() {
