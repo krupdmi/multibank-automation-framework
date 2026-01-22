@@ -1,39 +1,43 @@
 package org.multibank.core.playwright;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.*;
 import org.multibank.core.enums.BrowserName;
 
 import static org.multibank.core.constants.Constants.*;
 
 public final class PlaywrightInstanceProvider {
 
-    public static BrowserType.LaunchOptions defaultLaunchOptions() {
+    public static BrowserType.LaunchOptions defaultLaunchOptions(boolean headless) {
         return new BrowserType.LaunchOptions()
-                .setHeadless(DEFAULT_HEADLESS_MODE)
+                .setHeadless(headless)
                 .setSlowMo(SLOW_MOTION_MS);
     }
 
-    public static PlaywrightSession createPage(BrowserName browserName, String baseUrl) {
-
+    public static PlaywrightSession createPage(BrowserName browserName, String baseUrl, boolean isMobile, boolean headless) {
         Playwright playwright = Playwright.create();
 
         Browser browser = switch (browserName) {
-            case FIREFOX -> playwright.firefox().launch(defaultLaunchOptions());
-            case WEBKIT -> playwright.webkit().launch(defaultLaunchOptions());
-            default -> playwright.chromium().launch(defaultLaunchOptions());
+            case FIREFOX -> playwright.firefox().launch(defaultLaunchOptions(headless));
+            case WEBKIT -> playwright.webkit().launch(defaultLaunchOptions(headless));
+            default -> playwright.chromium().launch(defaultLaunchOptions(headless));
         };
 
-        BrowserContext context = browser.newContext(
-                new Browser.NewContextOptions()
-                        .setViewportSize(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_SIZE)
-                        .setScreenSize(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_SIZE)
-        );
+        int width = isMobile ? MOBILE_WIDTH : DESKTOP_WIDTH;
+        int height = isMobile ? MOBILE_HEIGHT : DESKTOP_HEIGHT;
 
+        Browser.NewContextOptions contextOptions = new Browser.NewContextOptions()
+                .setViewportSize(width, height)
+                .setScreenSize(width, height);
+
+        if (isMobile) {
+            contextOptions
+                    .setHasTouch(true)
+                    .setIsMobile(true);
+        }
+
+        BrowserContext context = browser.newContext(contextOptions);
         Page page = context.newPage();
+
         if (baseUrl != null && !baseUrl.isBlank()) {
             page.navigate(baseUrl);
         }

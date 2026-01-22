@@ -11,6 +11,8 @@ import org.multibank.ui.config.TestConfig;
 import org.multibank.ui.config.TestConfigLoader;
 import org.multibank.ui.utils.ScreenshotUtils;
 
+import static org.multibank.ui.constants.TestConstants.MOBILE;
+
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @ExtendWith(BaseUiTest.ScreenshotExtension.class)
 @Slf4j
@@ -29,10 +31,18 @@ public abstract class BaseUiTest {
     void setUp() {
         testFailure.remove();
         BrowserName browser = BrowserName.valueOf(config.browser().toUpperCase());
-        PlaywrightSession session = PlaywrightInstanceProvider.createPage(browser, config.baseUrl());
+        boolean isMobile = MOBILE.equalsIgnoreCase(config.platform());
+
+        PlaywrightSession session = PlaywrightInstanceProvider.createPage(
+                browser,
+                config.baseUrl(),
+                isMobile,
+                config.headless()
+        );
 
         sessionStorage.set(session);
-        log.info("Session started in thread: {}", Thread.currentThread().getName());
+        log.info("Session started for browser: {}, platform: {}, headless: {}",
+                 config.browser(), config.platform(), config.headless());
     }
 
     @AfterEach

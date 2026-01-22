@@ -4,6 +4,8 @@
   "environment": "PROD",
   "execution": "local",
   "lang": "en",
+  "platform": "desktop",
+  "headless": false,
   "retryCount": 5,
   "retryDelayMs": 1000
 }
