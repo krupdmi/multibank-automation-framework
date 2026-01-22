@@ -2,11 +2,11 @@
 
 Author: **Dmitrii Krupa**
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Core
 
-- **Java 17**
+- **Java 21**
 - **Maven**
 - **JUnit 5**
 
@@ -26,6 +26,17 @@ Author: **Dmitrii Krupa**
 - Chromium
 - Firefox
 - WebKit
+
+### Multi-Language Support
+
+- English (en)
+- German (de)
+- Spanish (es)
+
+### Platform Support
+
+- Desktop
+- Mobile
 
 ## Architecture Overview
 
@@ -52,21 +63,21 @@ multibank-automation-framework/
 ### Run full test suite
 
 ```bash
-mvn test
+mvn -pl test-automation-ui test
 ```
 
-### Run with Allure reporting
+### Generate Allure report after tests execution
 
 ```bash
-mvn clean test
-mvn allure:serve
+mvn -pl test-automation-ui allure:serve
 ```
 
-### Select browser
+### Run with parameters
 
 ```bash
-mvn test -Dbrowser=firefox
-mvn test -Dbrowser=webkit
+mvn -pl test-automation-ui test -Dlang=en -Dbrowser=chromium -Dplatform=desktop
+mvn -pl test-automation-ui test -Dlang=es -Dbrowser=webkit -Dplatform=mobile
+mvn -pl test-automation-ui test -Dlang=de -Dbrowser=firefox -Dheadless=true
 ```
 
 ### Run with Docker
@@ -76,7 +87,7 @@ Docker support allows running tests in an isolated environment with all dependen
 #### Build the Docker image
 
 ```bash
-docker-compose build --no-cache
+docker-compose build
 ```
 
 #### Run tests with default configuration
@@ -89,7 +100,15 @@ docker-compose run ui-tests
 
 You can override any environment variable:
 ```bash
-BASE_URL=https://example.site.com BROWSER=webkit docker-compose run ui-tests
+export BASE_URL=https://trade.multibank.io/
+export BROWSER=chromium
+export ENVIRONMENT=PROD
+export EXECUTION=docker
+export LANG=en
+export PLATFORM=desktop
+export HEADLESS=true
+export RETRY_COUNT=5
+export RETRY_DELAY_MS=1000
 ```
 
 #### Available environment variables
@@ -98,6 +117,9 @@ BASE_URL=https://example.site.com BROWSER=webkit docker-compose run ui-tests
 - `BROWSER` - Browser: chromium, firefox, webkit (default: chromium)
 - `ENVIRONMENT` - Environment name (default: PROD)
 - `EXECUTION` - Execution mode (default: docker)
+- `LANG` -  Language (default: en)
+- `PLATFORM` - Platform (default: desktop)
+- `HEADLESS` - Headless mode (default: false)
 - `RETRY_COUNT` - Number of retries for flaky tests (default: 3)
 - `RETRY_DELAY_MS` - Delay between retries in milliseconds (default: 1000)
 
@@ -116,20 +138,17 @@ Test results are automatically stored locally:
 Test data is stored externally in JSON format, for example:
 
 ```
-/testdata/navigation.json
-/testdata/trading.json
-/testdata/footer.json
+/testdata/${lang}/content-validation.json
+/testdata/${lang}/navigation-menu-items.json
+/testdata/${lang}/spot-trading.json
 ```
 
-This allows easy updates without touching code.
+This allows easy updates without touching the code.
 
 ---
 
 ### Roadmap
 
-- Multi-browser grid execution
-- Automated retries at test level
-- CI/CD integration
-- API module creation
+- CI/CD integration with retries at test level
 
 ---
