@@ -13,6 +13,7 @@ services:
       HEADLESS: ${HEADLESS}
       RETRY_COUNT: ${RETRY_COUNT}
       RETRY_DELAY_MS: ${RETRY_DELAY_MS}
+      TEST_RETRY_COUNT: ${TEST_RETRY_COUNT}
     volumes:
       - ./test-automation-ui/allure-results:/app/test-automation-ui/allure-results
     entrypoint: ["/entrypoint.sh"]

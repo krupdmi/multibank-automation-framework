@@ -12,6 +12,7 @@ echo "  PLATFORM=${PLATFORM}"
 echo "  HEADLESS=${HEADLESS}"
 echo "  RETRY_COUNT=${RETRY_COUNT}"
 echo "  RETRY_DELAY_MS=${RETRY_DELAY_MS}"
+echo "  TEST_RETRY_COUNT=${TEST_RETRY_COUNT}"
 
 # Install Playwright browsers if running in Docker
 if [ "$EXECUTION" = "docker" ]; then
@@ -21,11 +22,14 @@ fi
 
 cd /app/test-automation-ui
 
+# Build Maven command with retry count
+MVN_CMD="mvn test -Dtest.retry.count=${TEST_RETRY_COUNT:-3}"
+
 # Use for virtual display when headless mode is disabled
 if [ "$EXECUTION" = "docker" ] && [ "$HEADLESS" != "true" ]; then
     echo "Running tests with virtual display..."
-    xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" mvn test
+    xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" $MVN_CMD
 else
     echo "Running tests."
-    mvn test
+    $MVN_CMD
 fi

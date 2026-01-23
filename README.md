@@ -60,7 +60,18 @@ multibank-automation-framework/
 
 ## Running Tests
 
-### Run full test suite
+### Run from IDE
+
+You can run tests directly from your IDE (IntelliJ IDEA, Eclipse):
+
+- **Single test class**: Right-click on any test class (e.g. `NavigationTest.java`) and select "Run"
+- **Full regression suite**: Run the `RegressionSuite.java` class located at:
+  ```
+  test-automation-ui/src/test/java/org/multibank/ui/suites/RegressionSuite.java
+  ```
+  This suite includes all tests tagged with `@Tag("Regression")`
+
+### Run from command line
 
 ```bash
 mvn -pl test-automation-ui test
@@ -75,9 +86,9 @@ mvn -pl test-automation-ui allure:serve
 ### Run with parameters
 
 ```bash
-mvn -pl test-automation-ui test -Dlang=en -Dbrowser=chromium -Dplatform=desktop
-mvn -pl test-automation-ui test -Dlang=es -Dbrowser=webkit -Dplatform=mobile
-mvn -pl test-automation-ui test -Dlang=de -Dbrowser=firefox -Dheadless=true
+mvn -pl test-automation-ui test -Dlang=de -Dbrowser=chromium -Dplatform=desktop
+mvn -pl test-automation-ui test -Dlang=en -Dbrowser=webkit -Dplatform=mobile
+mvn -pl test-automation-ui test -Dlang=es -Dbrowser=firefox -Dheadless=true
 ```
 
 ### Run with Docker
@@ -106,9 +117,10 @@ export ENVIRONMENT=PROD
 export EXECUTION=docker
 export LANG=en
 export PLATFORM=desktop
-export HEADLESS=true
+export HEADLESS=false
 export RETRY_COUNT=5
 export RETRY_DELAY_MS=1000
+export TEST_RETRY_COUNT=3
 ```
 
 #### Available environment variables
@@ -122,6 +134,7 @@ export RETRY_DELAY_MS=1000
 - `HEADLESS` - Headless mode (default: false)
 - `RETRY_COUNT` - Number of retries for flaky tests (default: 3)
 - `RETRY_DELAY_MS` - Delay between retries in milliseconds (default: 1000)
+- `TEST_RETRY_COUNT` - Number of attempts to rerun failed scenarios
 
 #### Access test results
 
@@ -147,8 +160,77 @@ This allows easy updates without touching the code.
 
 ---
 
-### Roadmap
+## Parallel Execution
 
-- CI/CD integration with retries at test level
+Tests can be run in parallel using JUnit 5 parallel execution. Configuration is located at:
+
+```
+test-automation-ui/src/test/resources/junit-platform.properties
+```
+
+Current settings:
+```properties
+junit.jupiter.execution.parallel.enabled = true
+junit.jupiter.execution.parallel.config.fixed.parallelism = 2
+```
+
+Adjust `parallelism` value to control the number of concurrent test threads.
+
+---
+
+## Automatic Test Retries
+
+Failed tests are automatically retried using Maven Surefire plugin. Configuration in `test-automation-ui/pom.xml`:
+
+```xml
+<configuration>
+    <rerunFailingTestsCount>${test.retry.count}</rerunFailingTestsCount>
+</configuration>
+```
+
+Default retry count is **3**. Override via command line:
+
+```bash
+mvn -pl test-automation-ui test -Dtest.retry.count=1
+```
+
+---
+
+## Test Evidence
+
+Successful test execution screenshots are stored in the `test-evidence/` folder in the project root with the proof of successful test runs.
+
+---
+
+## Roadmap
+
+### CI/CD Integration
+
+The framework is designed for CI/CD pipeline integration with support for parallel matrix execution:
+
+**Strategy example:**
+
+```yaml
+strategy:
+  testMatrix:
+    browser: [chromium, firefox, webkit]
+    platform: [desktop, mobile]
+    lang: [en, de, es]
+```
+
+**CI/CD capabilities:**
+
+- Run tests in parallel across multiple browsers and platforms
+- Each matrix combination runs as a separate job in isolated container
+- Automatic test retries handle flaky tests
+- Allure reports aggregated from all parallel runs
+- Docker execution ensures consistent environment across CI runners
+
+**Example of Jenkins pipeline stages:**
+
+1. Build Docker image
+2. Run test matrix in parallel (browser, platform, language)
+3. Collect and merge Allure results
+4. Generate combined test report and deliver it via email or messenger
 
 ---
