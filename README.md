@@ -6,7 +6,7 @@ Author: **Dmitrii Krupa**
 
 ### Core
 
-- **Java 21**
+- **Java 17**
 - **Maven**
 - **JUnit 5**
 
