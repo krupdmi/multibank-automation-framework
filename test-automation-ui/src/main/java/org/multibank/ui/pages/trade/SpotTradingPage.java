@@ -39,14 +39,14 @@ public class SpotTradingPage extends BasePage {
         Locator scroll = locator(TRADE_PAIRS_SCROLLER).first();
         actions.scrollContainerToTop(scroll);
 
-        if (actions.waitForVisibleSafe(pairLocator, TestConstants.POLL_INTERVAL_MS)) {
+        if (actions.isLocatorVisible(pairLocator, TestConstants.POLL_INTERVAL_MS)) {
             return true;
         }
 
         for (int i = 0; i < TestConstants.MAX_SCROLL_ATTEMPTS; i++) {
             actions.scrollContainerBy(scroll, TestConstants.SCROLL_STEP_PX);
 
-            if (actions.waitForVisibleSafe(pairLocator, TestConstants.POLL_INTERVAL_MS)) {
+            if (actions.isLocatorVisible(pairLocator, TestConstants.POLL_INTERVAL_MS)) {
                 log.info("Found pair {} after {} scroll(s)", pairId, i + 1);
                 return true;
             }

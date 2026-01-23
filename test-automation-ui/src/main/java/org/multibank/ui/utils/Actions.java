@@ -8,6 +8,8 @@ import org.multibank.core.utils.RetryUtils;
 import org.multibank.ui.config.TestConfigLoader;
 import org.multibank.ui.constants.TestConstants;
 
+import static org.multibank.core.constants.Constants.DEFAULT_TIMEOUT_MS;
+
 @Slf4j
 public class Actions {
 
@@ -59,14 +61,14 @@ public class Actions {
     }
 
     public void waitForVisible(Locator locator) {
-        waitForVisible(locator, TestConstants.DEFAULT_TIMEOUT_MS);
+        waitForVisible(locator, DEFAULT_TIMEOUT_MS);
     }
 
     public void waitForVisible(Locator locator, int timeoutMs) {
         locator.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE).setTimeout(timeoutMs));
     }
 
-    public boolean waitForVisibleSafe(Locator locator, int timeoutMs) {
+    public boolean isLocatorVisible(Locator locator, int timeoutMs) {
         try {
             locator.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE).setTimeout(timeoutMs));
             return true;

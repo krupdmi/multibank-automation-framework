@@ -18,6 +18,7 @@ public class WhyMultibankPage extends BasePage {
 
     @Step("Get main heading text")
     public String getMainHeading() {
+        page.waitForLoadState();
         return page.locator(MAIN_HEADING).first().textContent().trim();
     }
 

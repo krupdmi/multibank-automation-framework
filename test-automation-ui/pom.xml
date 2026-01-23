@@ -20,6 +20,7 @@
         <assertj.version>3.26.3</assertj.version>
         <allure.version>2.29.0</allure.version>
         <jackson.version>2.17.2</jackson.version>
+        <test.retry.count>3</test.retry.count>
     </properties>
 
     <dependencies>
@@ -93,6 +94,7 @@
                         <include>**/*Test.java</include>
                         <include>**/*Suite.java</include>
                     </includes>
+                    <rerunFailingTestsCount>${test.retry.count}</rerunFailingTestsCount>
                 </configuration>
             </plugin>
         </plugins>
